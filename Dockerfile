@@ -1,8 +1,10 @@
 FROM python:3.7
 LABEL maintainer="marcus@punchcyber.com"
+LABEL maintainer="drsnowbird@openkbs.org"
 
 ENV USER stoq
 ENV GROUP stoq
+ENV HOME /home/$USER
 ENV STOQ_HOME /home/$USER/.stoq
 ENV STOQ_TMP /tmp/stoq
 ENV XORSEARCH_VER 1_11_3
@@ -74,6 +76,11 @@ RUN wget -O trid_linux_64.zip "http://mark0.net/download/trid_linux_64.zip" && \
 # Clean up
 RUN rm -rf $STOQ_TMP /tmp/* /var/tmp/*
 
-WORKDIR /home/$USER
+COPY ./docker-entrypoint.sh $HOME
+WORKDIR $HOME
 USER $USER
-ENTRYPOINT ["stoq"]
+#ENTRYPOINT ["stoq"]
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["stoq"]
